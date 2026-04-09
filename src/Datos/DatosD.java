@@ -8,33 +8,38 @@ public class DatosD {
 
     private final String archivo = "productos.txt";
 
-    public List<Producto> obtenerTodos() {
+    public List<Producto> obtenerTodos() throws IOException {
 
         List<Producto> lista = new ArrayList<>();
 
-        try(BufferedReader br = new BufferedReader(new FileReader(archivo))){
+        File file = new File(archivo);
 
-            String linea;
+        if(!file.exists()){
+            file.createNewFile();
+        }
 
-            while((linea = br.readLine()) != null){
-                lista.add(Producto.fromFileString(linea));
-            }
+        BufferedReader br = new BufferedReader(new FileReader(file));
 
-        }catch(Exception e){}
+        String linea;
+
+        while((linea = br.readLine()) != null){
+            lista.add(Producto.fromFileString(linea));
+        }
+
+        br.close();
 
         return lista;
     }
 
-    public void guardarTodos(List<Producto> productos){
+    public void guardarTodos(List<Producto> productos) throws IOException {
 
-        try(PrintWriter pw = new PrintWriter(new FileWriter(archivo))){
+        PrintWriter pw = new PrintWriter(new FileWriter(archivo));
 
-            for(Producto p : productos){
-                pw.println(p.toFileString());
-            }
-
-        }catch(Exception e){
-            e.printStackTrace();
+        for(Producto p : productos){
+            pw.println(p.toFileString());
         }
+
+        pw.close();
     }
+
 }

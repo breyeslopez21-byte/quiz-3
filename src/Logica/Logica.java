@@ -2,28 +2,32 @@ package Logica;
 
 import datos.DatosD;
 import Entidades.Producto;
+import excepciones.ProductoD;
+import excepciones.ProductoNE;
+import java.io.IOException;
 import java.util.*;
 
 public class Logica {
 
     private DatosD dao = new DatosD();
 
-    public boolean registrarProducto(Producto nuevo){
+    public void registrarProducto(Producto nuevo)
+            throws IOException, ProductoD{
 
         List<Producto> productos = dao.obtenerTodos();
 
         for(Producto p : productos){
             if(p.getId().equals(nuevo.getId())){
-                return false;
+                throw new ProductoD("El producto ya existe");
             }
         }
 
         productos.add(nuevo);
         dao.guardarTodos(productos);
-        return true;
     }
 
-    public Producto buscarProducto(String id){
+    public Producto buscarProducto(String id)
+            throws IOException, ProductoNE {
 
         List<Producto> productos = dao.obtenerTodos();
 
@@ -33,49 +37,42 @@ public class Logica {
             }
         }
 
-        return null;
+        throw new ProductoNE("Producto no encontrado");
     }
 
-    public boolean eliminarProducto(String id){
+    public void eliminarProducto(String id)
+            throws IOException, ProductoNE {
 
         List<Producto> productos = dao.obtenerTodos();
 
         boolean eliminado = productos.removeIf(p -> p.getId().equals(id));
 
-        if(eliminado){
-            dao.guardarTodos(productos);
+        if(!eliminado){
+            throw new ProductoNE("Producto no encontrado");
         }
 
-        return eliminado;
+        dao.guardarTodos(productos);
     }
 
-    public boolean actualizarCantidad(String id, int nuevaCantidad){
+    public void actualizarCantidad(String id, int cantidad)
+            throws IOException, ProductoNE {
 
         List<Producto> productos = dao.obtenerTodos();
 
-        for(Producto p : productos){
-            if(p.getId().equals(id)){
-                p.setCantidad(nuevaCantidad);
-                dao.guardarTodos(productos);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean actualizarPrecio(String id, double precio){
-
-        List<Producto> productos = dao.obtenerTodos();
+        boolean encontrado = false;
 
         for(Producto p : productos){
             if(p.getId().equals(id)){
-                p.setPrecio(precio);
-                dao.guardarTodos(productos);
-                return true;
+                p.setCantidad(cantidad);
+                encontrado = true;
             }
         }
 
-        return false;
+        if(!encontrado){
+            throw new ProductoNE("Producto no encontrado");
+        }
+
+        dao.guardarTodos(productos);
     }
+
 }

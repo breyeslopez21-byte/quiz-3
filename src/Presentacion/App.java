@@ -1,5 +1,6 @@
-package presentacion;
-
+package Presentacion;
+import excepciones.ProductoD;
+import excepciones.ProductoNE;
 import Entidades.Producto;
 import Logica.Logica;
 import javax.swing.JOptionPane;
@@ -8,9 +9,11 @@ public class App {
 
     public static void main(String[] args) {
 
-        Logica service = new Logica();
+    Logica service = new Logica();
 
-        while(true){
+    while(true){
+
+        try {
 
             String opcion = JOptionPane.showInputDialog(
                     "SISTEMA INVENTARIO\n" +
@@ -35,12 +38,19 @@ public class App {
                     );
 
                     Producto p = new Producto(id,nombre,cantidad,precio);
+                    try {
 
-                    if(service.registrarProducto(p)){
-                        JOptionPane.showMessageDialog(null,"Producto registrado");
-                    }else{
-                        JOptionPane.showMessageDialog(null,"ID ya existe");
-                    }
+    service.registrarProducto(p);
+
+    JOptionPane.showMessageDialog(null,"Producto registrado");
+
+} catch (ProductoD e) {
+
+    JOptionPane.showMessageDialog(null,"El producto ya existe");
+
+}
+
+                    
 
                 break;
 
@@ -68,29 +78,52 @@ public class App {
                             JOptionPane.showInputDialog("Nueva cantidad")
                     );
 
-                    if(service.actualizarCantidad(id,nuevaCantidad)){
-                        JOptionPane.showMessageDialog(null,"Actualizado");
-                    }else{
-                        JOptionPane.showMessageDialog(null,"Producto no encontrado");
-                    }
+                               try {
 
+                service.actualizarCantidad(id,nuevaCantidad);
+                JOptionPane.showMessageDialog(null,"Producto actualizado");
+
+            } catch (ProductoNE e) {
+
+    JOptionPane.showMessageDialog(null,"Producto no encontrado");
+
+}
                 break;
 
                 case "4":
 
                     id = JOptionPane.showInputDialog("ID a eliminar");
 
-                    if(service.eliminarProducto(id)){
-                        JOptionPane.showMessageDialog(null,"Eliminado");
-                    }else{
-                        JOptionPane.showMessageDialog(null,"No encontrado");
-                    }
+                                    try {
+
+                    service.eliminarProducto(id);
+                    JOptionPane.showMessageDialog(null,"Producto eliminado");
+
+                } catch (ProductoNE e) {
+
+                    JOptionPane.showMessageDialog(null,"Producto no encontrado");
+
+                }
 
                 break;
 
                 case "5":
                     System.exit(0);
+
+                default:
+                    JOptionPane.showMessageDialog(null,"Opción inválida");
             }
+
+        } catch (NumberFormatException e) {
+
+            JOptionPane.showMessageDialog(null,
+                    "Error: debe ingresar un número válido.");
+
+        } catch (Exception e) {
+
+            JOptionPane.showMessageDialog(null,
+                    "Ocurrió un error: " + e.getMessage());
         }
     }
+}
 }
