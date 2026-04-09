@@ -8,7 +8,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        Logica Logica = new Logica();
+        Logica service = new Logica();
 
         while(true){
 
