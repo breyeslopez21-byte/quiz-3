@@ -110,7 +110,6 @@ public class App {
                 case "5":
                     JOptionPane.showMessageDialog(null, " Hasta luego, muchas gracias");
                     JOptionPane.showMessageDialog(null, " Saliendo...");
-                    
                     System.exit(0);
 
                 default:
